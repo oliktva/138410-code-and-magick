@@ -176,7 +176,7 @@
 
   var wizardSpeed = 3;
   var wizardWidth = 70;
-  var getWizardHeight = function(wizardWidth) {
+  var getWizardHeight = function() {
     return 1.337 * wizardWidth;
   };
 
@@ -185,7 +185,7 @@
   };
 
   function getWizardY(height) {
-    return height / 3 - getWizardHeight(wizardWidth);
+    return height / 3 - getWizardHeight();
   };
 </script>
 <script src="js/game.js"></script>
