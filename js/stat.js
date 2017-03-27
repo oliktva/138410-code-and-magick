@@ -1,9 +1,6 @@
 'use strict';
 
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
-
-var getMax = function(arrayOfNumbers) {
+var getMax = function (arrayOfNumbers) {
   var max = arrayOfNumbers[0];
   for (var i = 1; i < arrayOfNumbers.length; i++) {
     max = Math.max(arrayOfNumbers[i], max);
@@ -11,7 +8,9 @@ var getMax = function(arrayOfNumbers) {
   return max;
 };
 
-var createCloud = function(ctx, x, y, width, height, color) {
+var createCloud = function (ctx, x, y, color) {
+  var width = 420;
+  var height = 270;
   ctx.fillStyle = color;
   ctx.beginPath();
   ctx.moveTo(x, y);
@@ -27,26 +26,34 @@ var createCloud = function(ctx, x, y, width, height, color) {
   ctx.stroke();
 };
 
-window.renderStatistics = function(ctx, names, times) {
-  createCloud(ctx, 110, 20, 420, 270, 'rgba(0, 0, 0, 0.7)');
-  createCloud(ctx, 100, 10, 420, 270, 'rgb(255, 255, 255)');
-
+var createText = function (ctx, x, y, text) {
   ctx.fillStyle = 'rgb(0, 0, 0)';
   ctx.font = '16px PT Mono';
-  ctx.fillText('Ура, вы победили!', 120, 40);
-  ctx.fillText('Список результатов:', 120, 64);
+  ctx.fillText(text, x, y);
+};
 
+var createRating = function (ctx, name, time, maxTime, index) {
+  var ratio = (time / maxTime).toFixed(2);
+  var xCoordinate = 130 + 90 * index;
+  var opacity = (Math.random() + 0.1).toFixed(1);
+  var color = name === 'Вы' ? 'rgb(255, 0, 0)' : 'rgba(2, 14, 134, ' + opacity + ')';
+
+  createText(ctx, xCoordinate, 265, name);
+  createText(ctx, xCoordinate, 87 + 150 * (1 - ratio), time);
+
+  ctx.fillStyle = color;
+  ctx.fillRect(xCoordinate, 95 + 150 * (1 - ratio), 40, 150 * ratio);
+};
+
+window.renderStatistics = function (ctx, names, times) {
+  createCloud(ctx, 110, 20, 'rgba(0, 0, 0, 0.7)');
+  createCloud(ctx, 100, 10, 'rgb(255, 255, 255)');
+
+  createText(ctx, 120, 40, 'Ура, вы победили!');
+  createText(ctx, 120, 64, 'Список результатов:');
+
+  var maxTime = Math.round(getMax(times));
   for (var i = 0; i < names.length; i++) {
-    var time = Math.round(times[i]);
-    var maxTime = Math.round(getMax(times));
-    ctx.fillStyle = 'rgb(0, 0, 0)';
-    ctx.font = '16px PT Mono';
-    var xCoordinate = 130 + 90 * i;
-    ctx.fillText(names[i], xCoordinate, 265);
-    ctx.fillText(time, xCoordinate, 87 + 150 * (1 - time / maxTime));
-
-    var color = names[i] === 'Вы' ? 'rgba(255, 0, 0, 1)' : 'rgba(2, 14, 134, ' + (Math.random() + 0.1) + ')';
-    ctx.fillStyle = color;
-    ctx.fillRect(xCoordinate, 95 + 150 * (1 - time / maxTime), 40, 150 * time / maxTime);
+    createRating(ctx, names[i], Math.round(times[i]), maxTime, i);
   }
 };
