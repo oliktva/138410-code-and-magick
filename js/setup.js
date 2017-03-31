@@ -1,32 +1,49 @@
 'use strict';
 
 var userDialog = document.querySelector('.setup');
-userDialog.classList.remove('hidden');
 var similarListElement = userDialog.querySelector('.setup-similar-list');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
 
-var getRandomElementOfArray = function (array) {
-  return array[Math.floor(Math.random() * array.length)];
+var firstNames = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
+var lastNames = ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'];
+var coatColors = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
+var eyesColors = ['black', 'red', 'blue', 'yellow', 'green'];
+
+var getRandom = function (min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
 };
 
-var createWizard = function () {
-  var firstNames = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
-  var lastNames = ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'];
-  var coatColors = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
-  var eyesColors = ['black', 'red', 'blue', 'yellow', 'green'];
+var exchangeArrayElements = function (array, i, j) {
+  var tmp = array[i];
+  array[i] = array[j];
+  array[j] = tmp;
+};
 
-  var wizard = {};
-  wizard.name = getRandomElementOfArray(firstNames) + ' ' + getRandomElementOfArray(lastNames);
-  wizard.coatColor = getRandomElementOfArray(coatColors);
-  wizard.eyesColor = getRandomElementOfArray(eyesColors);
+// Fisher–Yates shuffle (The modern algorithm)
+var shuffleArray = function (array) {
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = getRandom(0, i + 1);
+    exchangeArrayElements(array, i, j);
+  }
+};
 
-  return wizard;
+var createWizard = function (number) {
+  return {
+    name: firstNames[number] + ' ' + lastNames[number],
+    coatColor: coatColors[number],
+    eyesColor: eyesColors[number]
+  };
 };
 
 var createWizards = function (number) {
+  shuffleArray(firstNames);
+  shuffleArray(lastNames);
+  shuffleArray(coatColors);
+  shuffleArray(eyesColors);
+
   var wizards = [];
   for (var i = 0; i < number; i++) {
-    wizards[i] = createWizard();
+    wizards[i] = createWizard(i);
   }
   return wizards;
 };
@@ -50,5 +67,15 @@ var renderWizardsList = function (number) {
   similarListElement.appendChild(fragment);
 };
 
+var setElementVisible = function (element, isVisible) {
+  var className = 'hidden';
+  if (isVisible) {
+    element.classList.remove(className);
+  } else {
+    element.classList.add(className);
+  }
+};
+
+setElementVisible(userDialog, true);
 renderWizardsList(4);
-userDialog.querySelector('.setup-similar').classList.remove('hidden');
+setElementVisible(userDialog.querySelector('.setup-similar'), true);
