@@ -1,9 +1,6 @@
 'use strict';
 
 (function () {
-  var ESC_KEY_CODE = 27;
-  var ENTER_KEY_CODE = 13;
-
   var setup = document.querySelector('.setup');
   var openSetup = document.querySelector('.setup-open-icon');
   var setupForm = setup.querySelector('.setup-wizard-form');
@@ -15,10 +12,32 @@
   var wizardEyes = setup.querySelector('.setup-wizard-appearance .wizard-eyes');
   var wizardFireball = setup.querySelector('.setup-fireball-wrap');
 
+  var similarListElement = document.querySelector('.setup-similar-list');
+  var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
+
   var wizardState = {
     coat: 'rgb(101, 137, 164)',
     eyes: 'black',
     fireball: '#ee4830'
+  };
+
+  var renderWizard = function (wizard) {
+    var wizardElement = similarWizardTemplate.cloneNode(true);
+
+    wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
+    wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
+    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
+
+    return wizardElement;
+  };
+
+  var renderWizardsList = function (number) {
+    var fragment = document.createDocumentFragment();
+    var wizards = window.data.createWizards(number);
+    for (var i = 0; i < wizards.length; i++) {
+      fragment.appendChild(renderWizard(wizards[i]));
+    }
+    similarListElement.appendChild(fragment);
   };
 
   var saveWizardProperties = function () {
@@ -70,25 +89,25 @@
   };
 
   var onSetupEscKeydown = function (evt) {
-    if (evt.keyCode === ESC_KEY_CODE) {
+    if (window.checkKey.isEsc(evt)) {
       onCloseSetupClick();
     }
   };
 
   var onCloseSetupEnterKeydown = function (evt) {
-    if (evt.keyCode === ENTER_KEY_CODE) {
+    if (window.checkKey.isEnter(evt)) {
       onCloseSetupClick();
     }
   };
 
   var onSubmitSetupEnterKeydown = function (evt) {
-    if (evt.keyCode === ENTER_KEY_CODE) {
+    if (window.checkKey.isEnter(evt)) {
       onSubmitSetupClick();
     }
   };
 
   var onOpenSetupKeydown = function (evt) {
-    if (evt.keyCode === ENTER_KEY_CODE) {
+    if (window.checkKey.isEnter(evt)) {
       onOpenSetupClick();
     }
   };
@@ -123,7 +142,7 @@
     wizardFireball.style.background = window.data.getRandomFireballColor();
   };
 
-  window.render.renderWizardsList(4);
+  renderWizardsList(4);
   openSetup.addEventListener('click', onOpenSetupClick);
   openSetup.addEventListener('keydown', onOpenSetupKeydown);
   setElementVisible(setup.querySelector('.setup-similar'), true);
