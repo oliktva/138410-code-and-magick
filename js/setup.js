@@ -82,6 +82,7 @@
   };
 
   var closeSetupWindow = function () {
+    window.dialog.setStartPositionWindow();
     setElementVisible(setup, false);
 
     submitSetup.removeEventListener('keydown', onSubmitSetupEnterKeydown);
@@ -154,4 +155,54 @@
   openSetup.addEventListener('click', onOpenSetupClick);
   openSetup.addEventListener('keydown', onOpenSetupKeydown);
   setElementVisible(setup.querySelector('.setup-similar'), true);
+  window.dialog.setWindowDrag();
+
+  var FILLED_CLASS = 'filled';
+  var shopElement = document.querySelector('.setup-artifacts-shop');
+  var artifactsElement = document.querySelector('.setup-artifacts');
+  var draggedItem = null;
+
+  var isEmptyArtifactElement = function (target) {
+    return !target.classList.contains(FILLED_CLASS) && target.tagName.toLowerCase() === 'div';
+  };
+
+  var onShowElementDragstart = function (evt) {
+    if (evt.target.tagName.toLowerCase() === 'img') {
+      draggedItem = evt.target;
+      evt.dataTransfer.setData('text/plain', evt.target.alt);
+      artifactsElement.style.outline = '2px dashed red';
+    }
+  };
+
+  var onArtifactsElementDrop = function (evt) {
+    if (isEmptyArtifactElement(evt.target)) {
+      evt.target.style.backgroundColor = '';
+      evt.target.appendChild(draggedItem.cloneNode(true));
+      evt.target.classList.add(FILLED_CLASS);
+    }
+    artifactsElement.style.outline = 'none';
+  };
+
+  var onArtifactsElementDragenter = function (evt) {
+    if (isEmptyArtifactElement(evt.target)) {
+      evt.target.style.backgroundColor = 'yellow';
+      evt.preventDefault();
+    }
+  };
+
+  var onArtifactsElementDragleave = function (evt) {
+    if (isEmptyArtifactElement(evt.target)) {
+      evt.target.style.backgroundColor = '';
+      evt.preventDefault();
+    }
+  };
+
+  shopElement.addEventListener('dragstart', onShowElementDragstart);
+  artifactsElement.addEventListener('dragover', function (evt) {
+    evt.preventDefault();
+    return false;
+  });
+  artifactsElement.addEventListener('drop', onArtifactsElementDrop);
+  artifactsElement.addEventListener('dragenter', onArtifactsElementDragenter);
+  artifactsElement.addEventListener('dragleave', onArtifactsElementDragleave);
 })();
