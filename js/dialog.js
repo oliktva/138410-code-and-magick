@@ -3,11 +3,10 @@
 window.dialog = (function () {
   var setup = document.querySelector('.setup');
   var dialogHandle = setup.querySelector('.setup-user-pic');
-  var isOpened = false;
 
   var startCoords = {
-    x: 0,
-    y: 0
+    x: setup.offsetLeft,
+    y: setup.offsetTop
   };
 
   var coordsState = {};
@@ -44,11 +43,6 @@ window.dialog = (function () {
 
   var onWindowDrag = function (evt) {
     evt.preventDefault();
-
-    if (!isOpened) {
-      saveStartCoords(evt);
-      isOpened = true;
-    }
 
     coordsState = {
       x: evt.clientX,
