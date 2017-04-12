@@ -28,22 +28,10 @@ window.data = (function () {
     return wizards;
   };
 
-  var getRandomCoatColor = function () {
-    return coatColors[window.utils.getRandom(0, coatColors.length)];
-  };
-
-  var getRandomEyesColor = function () {
-    return eyesColors[window.utils.getRandom(0, eyesColors.length)];
-  };
-
-  var getRandomFireballColor = function () {
-    return fireballColors[window.utils.getRandom(0, fireballColors.length)];
-  };
-
   return {
     createWizards: createWizards,
-    getRandomCoatColor: getRandomCoatColor,
-    getRandomEyesColor: getRandomEyesColor,
-    getRandomFireballColor: getRandomFireballColor
+    coatColorList: coatColors,
+    eyesColorList: eyesColors,
+    fireballColorList: fireballColors
   };
 })();

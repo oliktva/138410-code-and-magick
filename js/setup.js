@@ -40,6 +40,14 @@
     similarListElement.appendChild(fragment);
   };
 
+  var fillElement = function (element, color) {
+    element.style.fill = color;
+  };
+
+  var changeElementBackground = function (element, color) {
+    element.style.backgroundColor = color;
+  };
+
   var saveWizardProperties = function () {
     wizardState = {
       coat: wizardCoat.style.fill,
@@ -131,15 +139,15 @@
   };
 
   var onWizardCoatClick = function () {
-    wizardCoat.style.fill = window.data.getRandomCoatColor();
+    window.colorizeElement(wizardCoat, window.data.coatColorList, fillElement);
   };
 
   var onWizardEyesClick = function () {
-    wizardEyes.style.fill = window.data.getRandomEyesColor();
+    window.colorizeElement(wizardEyes, window.data.eyesColorList, fillElement);
   };
 
   var onWizardFireballClick = function () {
-    wizardFireball.style.background = window.data.getRandomFireballColor();
+    window.colorizeElement(wizardFireball, window.data.fireballColorList, changeElementBackground);
   };
 
   renderWizardsList(4);
