@@ -1,20 +1,17 @@
 'use strict';
 
 window.dialog = (function () {
-  var setup = document.querySelector('.setup');
-  var dialogHandle = setup.querySelector('.setup-user-pic');
+  var element;
+  var handle;
 
-  var startCoords = {
-    x: setup.offsetLeft,
-    y: setup.offsetTop
-  };
+  var startCoords = null;
 
   var coordsState = {};
 
   var saveStartCoords = function (evt) {
     startCoords = {
-      x: setup.offsetLeft,
-      y: setup.offsetTop
+      x: element.offsetLeft,
+      y: element.offsetTop
     };
   };
 
@@ -30,8 +27,8 @@ window.dialog = (function () {
       y: moveEvt.clientY
     };
 
-    setup.style.top = (setup.offsetTop - shift.y) + 'px';
-    setup.style.left = (setup.offsetLeft - shift.x) + 'px';
+    element.style.top = (element.offsetTop - shift.y) + 'px';
+    element.style.left = (element.offsetLeft - shift.x) + 'px';
   };
 
   var onMouseUp = function (upEvt) {
@@ -53,17 +50,23 @@ window.dialog = (function () {
   };
 
   var setStartPositionWindow = function () {
-    setup.style.top = startCoords.y + 'px';
-    setup.style.left = startCoords.x + 'px';
+    element.style.top = startCoords.y + 'px';
+    element.style.left = startCoords.x + 'px';
   };
 
-  var setWindowDrag = function () {
-    dialogHandle.addEventListener('mousedown', onWindowDrag);
+  var setWindowDraggable = function (_element, _handle) {
+    element = _element;
+    handle = _handle;
+    startCoords = {
+      x: element.offsetLeft,
+      y: element.offsetTop
+    };
+    handle.addEventListener('mousedown', onWindowDrag);
   };
 
   return {
     saveStartCoords: saveStartCoords,
     setStartPositionWindow: setStartPositionWindow,
-    setWindowDrag: setWindowDrag
+    setWindowDraggable: setWindowDraggable
   };
 })();

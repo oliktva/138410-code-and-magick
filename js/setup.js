@@ -3,6 +3,7 @@
 (function () {
   var setup = document.querySelector('.setup');
   var openSetup = document.querySelector('.setup-open-icon');
+  var dialogHandle = setup.querySelector('.setup-user-pic');
   var setupForm = setup.querySelector('.setup-wizard-form');
   var setupName = setup.querySelector('.setup-user-name');
   var submitSetup = setup.querySelector('.setup-submit');
@@ -14,10 +15,6 @@
 
   var similarListElement = document.querySelector('.setup-similar-list');
   var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
-
-  var shopElement = document.querySelector('.setup-artifacts-shop');
-  var artifactsElement = document.querySelector('.setup-artifacts');
-  var draggedItem = null;
 
   var wizardState = {
     coat: 'rgb(101, 137, 164)',
@@ -66,24 +63,6 @@
     wizardFireball.style.background = wizardState.fireball;
   };
 
-  var saveArtifacts = function () {
-    var artifactsElementList = artifactsElement.querySelectorAll('.setup-artifacts-cell');
-    for (var i = 0; i < artifactsElementList.length; i++) {
-      artifactsElementList[i].dataset.empty = artifactsElementList[i].children.length > 0;
-    }
-  };
-
-  var resetArtifacts = function () {
-    var artifactsElementList = artifactsElement.querySelectorAll('.setup-artifacts-cell');
-    for (var i = 0; i < artifactsElementList.length; i++) {
-      if (artifactsElementList[i].children.length > 0 && artifactsElementList[i].dataset.empty) {
-        artifactsElementList[i].removeChild(artifactsElementList[i].children[0]);
-      } else if (artifactsElementList[i].children.length === 0 && artifactsElementList[i].dataset.empty === false) {
-        artifactsElementList[i].appendChild(draggedItem.cloneNode(true));
-      }
-    }
-  };
-
   var setElementVisible = function (element, isVisible) {
     var className = 'hidden';
     element.classList.toggle(className, !isVisible);
@@ -92,7 +71,7 @@
   var openSetupWindow = function () {
     setElementVisible(setup, true);
     window.dialog.saveStartCoords();
-    saveArtifacts();
+    window.shop.saveArtifactsState();
 
     submitSetup.addEventListener('keydown', onSubmitSetupEnterKeydown);
     closeSetup.addEventListener('keydown', onCloseSetupEnterKeydown);
@@ -106,8 +85,8 @@
   };
 
   var closeSetupWindow = function () {
-    window.dialog.setStartPositionWindow();
     setElementVisible(setup, false);
+    window.dialog.setStartPositionWindow();
 
     submitSetup.removeEventListener('keydown', onSubmitSetupEnterKeydown);
     closeSetup.removeEventListener('keydown', onCloseSetupEnterKeydown);
@@ -146,10 +125,10 @@
   };
 
 
-  var onSubmitSetupClick = function () {
+  var onSubmitSetupClick = function (evt) {
+    evt.preventDefault();
     if (setupName.validity.valid) {
       saveWizardProperties();
-      saveArtifacts();
       closeSetupWindow();
     }
   };
@@ -159,10 +138,10 @@
   };
 
   var onCloseSetupClick = function () {
+    closeSetupWindow();
     setupForm.reset();
     resetWizardProperties();
-    resetArtifacts();
-    closeSetupWindow();
+    window.shop.resetArtifacts();
   };
 
   var onWizardCoatClick = function () {
@@ -181,63 +160,6 @@
   openSetup.addEventListener('click', onOpenSetupClick);
   openSetup.addEventListener('keydown', onOpenSetupKeydown);
   setElementVisible(setup.querySelector('.setup-similar'), true);
-  window.dialog.setWindowDrag();
-
-  var draggingFromStore = false;
-
-  var isEmptyArtifactElement = function (target) {
-    return !(target.childNodes.length > 0);
-  };
-
-  var isThisTag = function (element, tag) {
-    return element.tagName.toLowerCase() === tag;
-  };
-
-  var onShowElementDragstart = function (evt) {
-    if (isThisTag(evt.target, 'img')) {
-      draggedItem = evt.target;
-      evt.dataTransfer.setData('text/plain', evt.target.alt);
-      artifactsElement.style.outline = '2px dashed red';
-      draggingFromStore = evt.target.parentNode.parentNode === shopElement;
-    }
-  };
-
-  var onArtifactsElementDrop = function (evt) {
-    if (isEmptyArtifactElement(evt.target) && isThisTag(evt.target, 'div')) {
-      evt.target.style.backgroundColor = '';
-      if (draggingFromStore) {
-        evt.target.appendChild(draggedItem.cloneNode(true));
-      } else {
-        evt.target.appendChild(draggedItem);
-      }
-    }
-    artifactsElement.style.outline = 'none';
-  };
-
-  var onArtifactsElementDragenter = function (evt) {
-    if (isEmptyArtifactElement(evt.target) && isThisTag(evt.target, 'div')) {
-      evt.target.style.backgroundColor = 'yellow';
-      evt.preventDefault();
-    }
-  };
-
-  var onArtifactsElementDragleave = function (evt) {
-    if (isEmptyArtifactElement(evt.target) && isThisTag(evt.target, 'div')) {
-      evt.target.style.backgroundColor = '';
-      evt.preventDefault();
-    }
-  };
-
-  shopElement.addEventListener('dragstart', onShowElementDragstart);
-  artifactsElement.addEventListener('dragstart', onShowElementDragstart);
-  artifactsElement.addEventListener('dragover', function (evt) {
-    evt.preventDefault();
-    return false;
-  });
-  artifactsElement.addEventListener('drop', onArtifactsElementDrop);
-  artifactsElement.addEventListener('dragenter', onArtifactsElementDragenter);
-  artifactsElement.addEventListener('dragleave', onArtifactsElementDragleave);
-  shopElement.addEventListener('dragend', function () {
-    artifactsElement.style.outline = 'none';
-  });
+  window.dialog.setWindowDraggable(setup, dialogHandle);
+  window.shop.initShop();
 })();
