@@ -70,7 +70,7 @@
 
   var openSetupWindow = function () {
     setElementVisible(setup, true);
-    window.dialog.saveStartCoords();
+    window.draggable.saveStartCoords();
     window.shop.saveArtifactsState();
 
     submitSetup.addEventListener('keydown', onSubmitSetupEnterKeydown);
@@ -86,7 +86,7 @@
 
   var closeSetupWindow = function () {
     setElementVisible(setup, false);
-    window.dialog.setStartPositionWindow();
+    window.draggable.setStartPositionWindow();
 
     submitSetup.removeEventListener('keydown', onSubmitSetupEnterKeydown);
     closeSetup.removeEventListener('keydown', onCloseSetupEnterKeydown);
@@ -160,6 +160,6 @@
   openSetup.addEventListener('click', onOpenSetupClick);
   openSetup.addEventListener('keydown', onOpenSetupKeydown);
   setElementVisible(setup.querySelector('.setup-similar'), true);
-  window.dialog.setWindowDraggable(setup, dialogHandle);
+  window.draggable.setDraggable(setup, dialogHandle);
   window.shop.initShop();
 })();
