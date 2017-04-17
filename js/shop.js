@@ -4,6 +4,7 @@ window.shop = (function () {
   var CELL_CLASS = 'setup-artifacts-cell';
   var BG_CLASS = 'yellow';
   var OUTLINE_CLASS = 'red-outline';
+
   var shopElement = document.querySelector('.setup-artifacts-shop');
   var artifactsElement = document.querySelector('.setup-artifacts');
   var artifactsElementList = artifactsElement.querySelectorAll('.setup-artifacts-cell');
