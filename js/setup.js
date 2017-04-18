@@ -3,6 +3,7 @@
 (function () {
   var setup = document.querySelector('.setup');
   var openSetup = document.querySelector('.setup-open-icon');
+  var dialogHandle = setup.querySelector('.setup-user-pic');
   var setupForm = setup.querySelector('.setup-wizard-form');
   var setupName = setup.querySelector('.setup-user-name');
   var submitSetup = setup.querySelector('.setup-submit');
@@ -69,6 +70,8 @@
 
   var openSetupWindow = function () {
     setElementVisible(setup, true);
+    window.draggable.saveStartCoords();
+    window.shop.saveArtifactsState();
 
     submitSetup.addEventListener('keydown', onSubmitSetupEnterKeydown);
     closeSetup.addEventListener('keydown', onCloseSetupEnterKeydown);
@@ -83,6 +86,7 @@
 
   var closeSetupWindow = function () {
     setElementVisible(setup, false);
+    window.draggable.setStartPositionWindow();
 
     submitSetup.removeEventListener('keydown', onSubmitSetupEnterKeydown);
     closeSetup.removeEventListener('keydown', onCloseSetupEnterKeydown);
@@ -121,7 +125,8 @@
   };
 
 
-  var onSubmitSetupClick = function () {
+  var onSubmitSetupClick = function (evt) {
+    evt.preventDefault();
     if (setupName.validity.valid) {
       saveWizardProperties();
       closeSetupWindow();
@@ -133,9 +138,10 @@
   };
 
   var onCloseSetupClick = function () {
+    closeSetupWindow();
     setupForm.reset();
     resetWizardProperties();
-    closeSetupWindow();
+    window.shop.resetArtifacts();
   };
 
   var onWizardCoatClick = function () {
@@ -154,4 +160,6 @@
   openSetup.addEventListener('click', onOpenSetupClick);
   openSetup.addEventListener('keydown', onOpenSetupKeydown);
   setElementVisible(setup.querySelector('.setup-similar'), true);
+  window.draggable.setDraggable(setup, dialogHandle);
+  window.shop.initShop();
 })();
