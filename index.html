@@ -168,6 +168,14 @@
     <p class="setup-similar-label">Петр Петров</p>
   </div>
 </template>
+<template id="error-template">
+  <div class="error">
+    <div class="error__message">Загрузка произошла с ошибкой status text</div>
+    <div class="error__btn-wrapper">
+      <a class="error__btn"></a>
+    </div>
+  </div>
+</template>
 <script>
   var fireballSize = 22;
   var getFireballSpeed = function(left) {
@@ -188,6 +196,7 @@
     return height / 3 - getWizardHeight();
   };
 </script>
+<script src="js/error.js"></script>
 <script src="js/stat.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/data.js"></script>
