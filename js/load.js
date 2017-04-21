@@ -1,10 +1,9 @@
 'use strict';
 
 window.load = (function () {
-  var xhr = new XMLHttpRequest();
-  xhr.responseType = 'json';
-
   return function (url, onLoad) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
     xhr.open('GET', url);
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
